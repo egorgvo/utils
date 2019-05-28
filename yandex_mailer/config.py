@@ -1,0 +1,1 @@
+YANDEX_SMTP_SERVER = 'smtp.yandex.ru'
