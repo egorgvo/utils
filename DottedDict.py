@@ -1,8 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
 """
-Модуль, описывающий класс DottedDict, позволяющий вызывать ключи словаря через точку
+Class DottedDict allows you to call dict keys with the dot.
 """
 
 
