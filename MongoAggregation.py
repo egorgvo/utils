@@ -4,7 +4,7 @@
 from copy import copy
 from itertools import chain, combinations, product
 
-from universal.mongo_aggregation_patterns import dollar_prefix, pop_dollar_prefix
+from mongo_aggregation_patterns import dollar_prefix, pop_dollar_prefix
 
 
 class MongoAggregation(list):

@@ -8,7 +8,7 @@
 import codecs
 from csv import DictReader
 
-from universal.universal import str_to_list
+from universal import str_to_list
 
 
 def yesno_question(question, example='y/n', retry=True, retry_message='',

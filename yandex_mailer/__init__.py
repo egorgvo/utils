@@ -1,1 +1,1 @@
-from universal.yandex_mailer.YandexMailer import YandexMailer
+from yandex_mailer.YandexMailer import YandexMailer
