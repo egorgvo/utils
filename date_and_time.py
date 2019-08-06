@@ -115,7 +115,7 @@ def next_day(day):
     >>> next_day(datetime(2018, 2, 24, 12, 22, 22, 908))
     datetime.datetime(2018, 2, 25, 0, 0)
     """
-    return day_start(day) + relativedelta(days=1)
+    return day_start(day) + timedelta(days=1)
 
 
 def week_start(some_date):
@@ -131,7 +131,7 @@ def week_start(some_date):
     >>> week_start(datetime(2018, 2, 1))
     datetime.datetime(2018, 1, 29, 0, 0)
     """
-    return day_start(some_date) - relativedelta(days=some_date.weekday())
+    return day_start(some_date) - timedelta(days=some_date.weekday())
 
 
 def next_week(some_date):
@@ -147,7 +147,7 @@ def next_week(some_date):
     >>> next_week(datetime(2018, 2, 1))
     datetime.datetime(2018, 2, 5, 0, 0)
     """
-    return week_start(some_date) + relativedelta(weeks=1)
+    return week_start(some_date) + timedelta(weeks=1)
 
 
 def month_start(some_date):
