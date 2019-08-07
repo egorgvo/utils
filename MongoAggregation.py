@@ -23,7 +23,7 @@ class MongoAggregation(list):
             self.collection = collection
         if allowDiskUse:
             self.allowDiskUse = allowDiskUse
-        if not self.collection:
+        if self.collection.__class__.__name__ != 'QuerySet' and not self.collection:
             logger.error('Агрегация невозможна: не указана коллекция')
             return
         if self.collection.__class__.__name__ == 'QuerySet':
