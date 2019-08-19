@@ -72,7 +72,7 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
         yield default
 
 
-def sort_list_of_dicts(lst, keys):
+def sort_list_of_dicts(lst, keys, reverse=False):
     """
     Сортирует список словарей по ключам словаря.
     В качестве ключей сортировки можно подавать несколько ключей словаря.
@@ -90,8 +90,8 @@ def sort_list_of_dicts(lst, keys):
     """
     keys = keys.split(',') if isinstance(keys, str) else keys
     if isinstance(keys, Iterable):
-        return sorted(lst, key=itemgetter(*keys))
-    return sorted(lst, key=itemgetter(keys))
+        return sorted(lst, key=itemgetter(*keys), reverse=reverse)
+    return sorted(lst, key=itemgetter(keys), reverse=reverse)
 
 
 if __name__ == '__main__':
