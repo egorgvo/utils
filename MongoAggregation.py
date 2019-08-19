@@ -97,10 +97,9 @@ class MongoAggregation(list):
     def sort(self, *args, **kwargs):
         self._convert_names_with_underlines_to_dots(kwargs)
         # Складываем все в args
-        if args and kwargs:
-            args[-1].update(kwargs)
-        elif kwargs:
-            args = (kwargs,)
+        args = list(args)
+        if kwargs:
+            args.append(kwargs)
 
         if not args: return self
         # Делаем project
