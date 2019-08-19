@@ -79,8 +79,27 @@ def sort_list_of_dicts(lst, keys):
     :param lst: Список словарей
     :param keys: Ключи словаря
     :return: Отсортированный по правилу сортировки список словарей
+
+    >>> some_list = [{'order': 3, 'value': 3}, {'order': 1, 'value': 3}, {'order': 3, 'value': 1}]
+    >>> sort_list_of_dicts(some_list, 'order,value')
+    [{'order': 1, 'value': 3}, {'order': 3, 'value': 1}, {'order': 3, 'value': 3}]
+    >>> sort_list_of_dicts(some_list, ('order', 'value'))
+    [{'order': 1, 'value': 3}, {'order': 3, 'value': 1}, {'order': 3, 'value': 3}]
+    >>> sort_list_of_dicts(some_list, 'order')
+    [{'order': 1, 'value': 3}, {'order': 3, 'value': 3}, {'order': 3, 'value': 1}]
     """
     keys = keys.split(',') if isinstance(keys, str) else keys
     if isinstance(keys, Iterable):
         return sorted(lst, key=itemgetter(*keys))
     return sorted(lst, key=itemgetter(keys))
+
+
+if __name__ == '__main__':
+
+    def _test_module():
+        import doctest
+        result = doctest.testmod()
+        if not result.failed:
+            print(f"{result.attempted} passed and {result.failed} failed.\nTest passed.")
+
+    _test_module()
