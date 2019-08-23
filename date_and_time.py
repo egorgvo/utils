@@ -33,13 +33,13 @@ def as_timezone(source_date, as_tz='UTC', source_tz_by_default='UTC'):
     return source_date.astimezone(as_tz)
 
 
-def localize(date, new_timezone='UTC', force=False):
-    if date.tzinfo and (not force or not new_timezone):
-        return date.tzinfo.localize(date.replace(tzinfo=None))
+def localize(some_date, new_timezone='UTC', force=False):
+    if some_date.tzinfo and (not force or not new_timezone):
+        return some_date
     if not new_timezone:
         new_timezone = UTC
     new_timezone = _timezone(new_timezone)
-    return new_timezone.localize(date.replace(tzinfo=None))
+    return new_timezone.localize(some_date.replace(tzinfo=None))
 
 
 def duration(open_date, close_date=None, time_unit='seconds'):
