@@ -55,9 +55,9 @@ date_pattern = {"format": 'date-time'}
 # Дата по ISO
 date_ISO8601_Z_pattern = {
     'type': 'string',
-    'minLength': 20,
-    'maxLength': 20,
-    'pattern': '^20[0-9]{2}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-6][0-9]:[0-6][0-9]Z?$',
+    'minLength': 16,
+    'maxLength': 27,
+    'pattern': '^20[0-9]{2}-[0-1][0-9]-[0-3][0-9]T[0-2][0-9]:[0-6][0-9]:([0-6][0-9])?(.[0-9]{6})?Z?$',
 }
 
 int_as_string = {
