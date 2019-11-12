@@ -13,25 +13,28 @@ from jsonschema import Draft4Validator, FormatChecker
 logger = logging.getLogger()
 
 
-def validate_request_json(schema):
+def validate_request_json(schema, content_type='json'):
     """Request JSON validation decorator"""
     def decorator(f):
         f.gw_method = f.__name__
 
         @wraps(f)
         def wrapper(*args, **kwargs):
-            if not request.is_json:
+            if content_type == 'json' and not request.is_json:
                 logger.error("No request JSON found for {}.".format(f.__name__))
                 return {"errors": ["Invalid JSON format"]}, 400
 
-            json = request.json
-            errors = validate(json, schema)
+            if content_type == 'form':
+                data = dict(request.form)
+            else:
+                data = request.json
+            errors = validate(data, schema)
             if errors:
                 logger.error("Errors found during validation of {}: {}".format(f.__name__, errors))
                 return {'errors': errors}, 400
             logger.debug('Validation for method {} completed, no errors'.format(f.__name__))
 
-            kwargs['json'] = json
+            kwargs[content_type] = data
             return f(*args, **kwargs)
 
         return wrapper
