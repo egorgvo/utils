@@ -5,6 +5,7 @@
 Модуль содержит паттерны для использования в валидации с помощью jsonschema
 """
 
+import json
 import logging
 from flask import request
 from functools import wraps
@@ -26,6 +27,13 @@ def validate_request_json(schema, content_type='json'):
 
             if content_type == 'form':
                 data = dict(request.form)
+            elif content_type == 'params':
+                data = {}
+                for key, value in dict(request.args).items():
+                    try:
+                        data[key] = json.loads(value)
+                    except Exception:
+                        data[key] = value
             else:
                 data = request.json
             errors = validate(data, schema)
