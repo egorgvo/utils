@@ -102,3 +102,6 @@ float_as_string = {
     'type': 'string',
     'pattern': '^[0-9]+\.[0-9]+$',
 }
+
+positive_number = {'type': 'number', "minimum": 0}
+positive_integer = {'type': 'integer', "minimum": 0}
