@@ -29,7 +29,7 @@ def validate_request_json(schema, content_type='json'):
                 data = dict(request.form)
             elif content_type == 'params':
                 data = {}
-                for key, value in dict(request.args).items():
+                for key, value in request.args.to_dict().items():
                     try:
                         data[key] = json.loads(value)
                     except Exception:
