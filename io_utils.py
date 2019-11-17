@@ -97,7 +97,8 @@ def sv_import(filename, field_names=None, fields_converters=None, comment_symbol
             yield row
 
 
-def sv_export(rows, filename, ordered_fields=None, ordered_fields_view=None, write_header=True, sep=',', encoding='utf-8'):
+def sv_export(rows, filename, ordered_fields=None, ordered_fields_view=None, write_header=True, sep=',',
+              encoding='utf-8', rw_mode='w'):
     if not filename:
         return None
     if ordered_fields:
@@ -106,7 +107,7 @@ def sv_export(rows, filename, ordered_fields=None, ordered_fields_view=None, wri
         ordered_fields_view = ordered_fields
     if ordered_fields_view:
         ordered_fields_view = str_to_list(ordered_fields_view)
-    with codecs.open(filename, 'w', encoding=encoding) as sv_file:
+    with codecs.open(filename, rw_mode, encoding=encoding) as sv_file:
         # Writing header
         if ordered_fields and write_header:
             sv_file.write(sep.join(ordered_fields_view) + "\n")
