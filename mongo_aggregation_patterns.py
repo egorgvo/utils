@@ -245,6 +245,10 @@ def multiply(*args):
     return {'$multiply': _list_dollar_prefix(*args)}
 
 
+def divide(first_expression, second_expression):
+    return {'$divide': _list_dollar_prefix(first_expression, second_expression)}
+
+
 def aggr_sum(*args):
     args = _list_dollar_prefix(*args)
     if len(args) == 1:
