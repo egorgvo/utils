@@ -8,6 +8,15 @@ Module with dict common functions
 from copy import deepcopy
 
 
+def dict_invert(some_dict):
+    """
+    >>> a = {'a': 1, 'b': 2, 'c': 3}
+    >>> dict_invert(a)
+    {1: 'a', 2: 'b', 3: 'c'}
+    """
+    return {v: k for k, v in some_dict.items()}
+
+
 def dict_copy(some_dict, fields=None, deep=False):
     """
     >>> a = {'a': 1, 'b': 2, 'c': 3}
