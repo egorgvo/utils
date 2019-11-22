@@ -17,7 +17,7 @@ def dict_invert(some_dict):
     return {v: k for k, v in some_dict.items()}
 
 
-def dict_copy(some_dict, fields=None, deep=False):
+def dict_copy(some_dict, fields=None, deep=False, **kwargs):
     """
     >>> a = {'a': 1, 'b': 2, 'c': 3}
     >>> dict_copy(a, 'a')
@@ -30,19 +30,29 @@ def dict_copy(some_dict, fields=None, deep=False):
     {'a': 1, 'b': 2}
     >>> dict_copy(a)
     {'a': 1, 'b': 2, 'c': 3}
+    >>> dict_copy(a, d='c')
+    {'a': 1, 'b': 2, 'd': 3}
     """
     if deep:
         result_dict = deepcopy(some_dict)
-    elif not fields:
+    elif not fields and not kwargs:
         result_dict = some_dict.copy()
     else:
         result_dict = some_dict
-    if not fields:
+    if not fields and not kwargs:
         return result_dict
 
     if isinstance(fields, str):
         fields = fields.split(',')
-    return {field: value for field, value in result_dict.items() if not fields or field in fields}
+    if kwargs:
+        kwargs = dict_invert(kwargs)
+        return {
+            kwargs[field] if field in kwargs else field: value
+            for field, value in result_dict.items()
+            if not fields or field in fields
+        }
+    else:
+        return {field: value for field, value in result_dict.items() if not fields or field in fields}
 
 
 if __name__ == '__main__':
