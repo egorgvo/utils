@@ -31,7 +31,11 @@ def dict_copy(some_dict, fields=None, deep=False, **kwargs):
     >>> dict_copy(a)
     {'a': 1, 'b': 2, 'c': 3}
     >>> dict_copy(a, d='c')
+    {'d': 3}
+    >>> dict_copy(a, '*', d='c')
     {'a': 1, 'b': 2, 'd': 3}
+    >>> dict_copy(a, 'b', d='c')
+    {'b': 2, 'd': 3}
     """
     if deep:
         result_dict = deepcopy(some_dict)
@@ -42,17 +46,22 @@ def dict_copy(some_dict, fields=None, deep=False, **kwargs):
     if not fields and not kwargs:
         return result_dict
 
-    if isinstance(fields, str):
+    if not fields:
+        fields = []
+    elif fields == "*":
+        fields = set(result_dict)
+        fields -= set(kwargs)
+    elif isinstance(fields, str):
         fields = fields.split(',')
     if kwargs:
         kwargs = dict_invert(kwargs)
         return {
             kwargs[field] if field in kwargs else field: value
             for field, value in result_dict.items()
-            if not fields or field in fields
+            if field in fields or field in kwargs
         }
     else:
-        return {field: value for field, value in result_dict.items() if not fields or field in fields}
+        return {field: value for field, value in result_dict.items() if field in fields}
 
 
 if __name__ == '__main__':
