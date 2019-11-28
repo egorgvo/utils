@@ -26,7 +26,7 @@ def validate_request_json(schema, content_type='json'):
                 return {"errors": ["Invalid JSON format"]}, 400
 
             if content_type == 'form':
-                data = dict(request.form)
+                data = request.form.to_dict()
             elif content_type == 'params':
                 data = {}
                 for key, value in request.args.to_dict().items():
