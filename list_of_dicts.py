@@ -82,32 +82,37 @@ def sort_list_of_dicts(lst, keys, reverse=False, default=None, **convert):
     :param convert: dict of conversion (before comparison) rules
     :return: sorted list of dicts
 
-    >>> some_list = [{'order': 3, 'value': 3}, {'order': 1, 'value': 3}, {'order': 3, 'value': 1}]
-    >>> sort_list_of_dicts(some_list, 'order,value')
+    >>> lst = [{'order': 3, 'value': 3}, {'order': 1, 'value': 3}, {'order': 3, 'value': 1}]
+    >>> sort_list_of_dicts(lst, 'order,value')
     [{'order': 1, 'value': 3}, {'order': 3, 'value': 1}, {'order': 3, 'value': 3}]
-    >>> sort_list_of_dicts(some_list, ('order', 'value'))
+    >>> sort_list_of_dicts(lst, ('order', 'value'))
     [{'order': 1, 'value': 3}, {'order': 3, 'value': 1}, {'order': 3, 'value': 3}]
-    >>> sort_list_of_dicts(some_list, 'order')
+    >>> sort_list_of_dicts(lst, 'order')
     [{'order': 1, 'value': 3}, {'order': 3, 'value': 3}, {'order': 3, 'value': 1}]
-    >>> sort_list_of_dicts(some_list, '-order,value')
+    >>> sort_list_of_dicts(lst, '-order,value')
     [{'order': 3, 'value': 1}, {'order': 3, 'value': 3}, {'order': 1, 'value': 3}]
-    >>> sort_list_of_dicts(some_list, 'order,-value')
+    >>> sort_list_of_dicts(lst, 'order,-value')
     [{'order': 1, 'value': 3}, {'order': 3, 'value': 3}, {'order': 3, 'value': 1}]
-    >>> sort_list_of_dicts(some_list, '-order,-value')
+    >>> sort_list_of_dicts(lst, '-order,-value')
     [{'order': 3, 'value': 3}, {'order': 3, 'value': 1}, {'order': 1, 'value': 3}]
-    >>> sort_list_of_dicts(some_list, '-value,-order')
+    >>> sort_list_of_dicts(lst, '-value,-order')
     [{'order': 3, 'value': 3}, {'order': 1, 'value': 3}, {'order': 3, 'value': 1}]
-    >>> sort_list_of_dicts(some_list, '-value,-order', reverse=True)
+    >>> sort_list_of_dicts(lst, '-value,-order', reverse=True)
     [{'order': 3, 'value': 1}, {'order': 1, 'value': 3}, {'order': 3, 'value': 3}]
-    >>> sort_list_of_dicts(some_list, 'order', reverse=True)
+    >>> sort_list_of_dicts(lst, 'order', reverse=True)
     [{'order': 3, 'value': 3}, {'order': 3, 'value': 1}, {'order': 1, 'value': 3}]
-    >>> sort_list_of_dicts(some_list, ('-order', 'value'))
+    >>> sort_list_of_dicts(lst, ('-order', 'value'))
     [{'order': 3, 'value': 1}, {'order': 3, 'value': 3}, {'order': 1, 'value': 3}]
-    >>> lst = [{"k1": "JKd", "k2": False}, {'k1': 'Ukz', 'k2': False}, {"k1": "aqd", "k2": True}, {"k1": "Asd", "k2": True}, {"k1": "weg", "k2": False, '1': 'tpue'}, {"k1": "lfe", "k2": True, '1': 'true'}]
-    >>> sort_list_of_dicts(lst, ('1', '-k2','k1'), default={'1': 'z'}, k1=str.lower)
-    [{'k1': 'weg', 'k2': False, '1': 'tpue'}, {'k1': 'lfe', 'k2': True, '1': 'true'}, {'k1': 'aqd', 'k2': True}, {'k1': 'Asd', 'k2': True}, {'k1': 'JKd', 'k2': False}, {'k1': 'Ukz', 'k2': False}]
-    >>> sort_list_of_dicts(lst, ('1', '-k2','k1'), default='', k1=str.lower)
-    [{'k1': 'aqd', 'k2': True}, {'k1': 'Asd', 'k2': True}, {'k1': 'JKd', 'k2': False}, {'k1': 'Ukz', 'k2': False}, {'k1': 'weg', 'k2': False, '1': 'tpue'}, {'k1': 'lfe', 'k2': True, '1': 'true'}]
+    >>> lst = [{}, {'1': 'tpue'}, {'1': 'true'}]
+    >>> sort_list_of_dicts(lst, '1', default={'1': 'z'})
+    [{'1': 'tpue'}, {'1': 'true'}, {}]
+    >>> sort_list_of_dicts(lst, '1', default='')
+    [{}, {'1': 'tpue'}, {'1': 'true'}]
+    >>> lst = [{'k1': 'weg'}, {'k1': 'lfe'}, {'k1': 'aqd'}, {'k1': 'Asd'}, {'k1': 'JKd'}, {'k1': 'Ukz'}]
+    >>> sort_list_of_dicts(lst, 'k1')
+    [{'k1': 'Asd'}, {'k1': 'JKd'}, {'k1': 'Ukz'}, {'k1': 'aqd'}, {'k1': 'lfe'}, {'k1': 'weg'}]
+    >>> sort_list_of_dicts(lst, 'k1', k1=str.lower)
+    [{'k1': 'aqd'}, {'k1': 'Asd'}, {'k1': 'JKd'}, {'k1': 'lfe'}, {'k1': 'Ukz'}, {'k1': 'weg'}]
     """
     keys = keys.split(',') if isinstance(keys, str) else keys
     keys_list = []
