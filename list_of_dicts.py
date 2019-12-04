@@ -134,6 +134,84 @@ def sort_list_of_dicts(lst, keys, reverse=False, default=None, **convert):
     return sorted(lst, key=key, reverse=reverse)
 
 
+def column_sum(data, column_name):
+    """
+    Получает сумму по индексу по всем строкам итерируемого объекта
+    :param data: Итерируемый объект
+    :param column_name: Индекс или наименование колонки
+    :return: Сумма
+    """
+    return sum(row[column_name] if column_name in row else 0 for row in data)
+
+
+def group_list_of_dicts(_source_list, by_fields='', sum_fields=''):
+    """
+    Группирует список словарей по полям выборки
+
+    >>> source_list = [{'a': 1, 'b': 2, 'c': 5}, {'a': 1, 'b': 3, 'c': 5}, {'a': 1, 'b': 2, 'c': 6}, {'a': 1, 'b': 2, 'c': 5}]
+    >>> group_list_of_dicts(source_list, 'a,b,c')
+    [{'a': 1, 'c': 5, 'b': 2}, {'a': 1, 'c': 5, 'b': 3}, {'a': 1, 'c': 6, 'b': 2}]
+    >>> group_list_of_dicts(source_list, 'a,b,c', 'c')
+    [{'a': 1, 'c': 10, 'b': 2}, {'a': 1, 'c': 5, 'b': 3}, {'a': 1, 'c': 6, 'b': 2}]
+    >>> group_list_of_dicts(source_list, 'a,b')
+    [{'a': 1, 'b': 2}, {'a': 1, 'b': 3}]
+    >>> group_list_of_dicts(source_list, 'a,b', 'c')
+    [{'a': 1, 'c': 16, 'b': 2}, {'a': 1, 'c': 5, 'b': 3}]
+    >>> group_list_of_dicts(source_list, 'a', 'b,c')
+    [{'a': 1, 'c': 21, 'b': 9}]
+    >>> group_list_of_dicts(source_list, 'a,d', 'b,c')
+    [{'a': 1, 'c': 21, 'b': 9}]
+    >>> group_list_of_dicts(source_list, 'a,d,c', 'b,c')
+    [{'a': 1, 'c': 15, 'b': 7}, {'a': 1, 'c': 6, 'b': 2}]
+    >>> source_list[-1]['d'] = 1
+    >>> group_list_of_dicts(source_list, 'a,d', 'b,c')
+    [{'a': 1, 'c': 16, 'b': 7}, {'a': 1, 'c': 5, 'b': 2, 'd': 1}]
+
+    :param _source_list: Исходный список словарей
+    :param by_fields: Поля выборки
+    :type by_fields: Список, либо строка ключей через запятые
+    :param sum_fields: Поля, которые суммируются при группировке
+    :type sum_fields: Список, либо строка ключей через запятые
+    :return: Список словарей
+    """
+    if isinstance(by_fields, str):
+        by_fields = by_fields.split(',')
+        if '' in by_fields: by_fields.remove('')
+    if not by_fields: return _source_list
+    if isinstance(sum_fields, str):
+        sum_fields = sum_fields.split(',')
+        if '' in sum_fields: sum_fields.remove('')
+
+    # Собираем словари в группы по полям выборки
+    # В итоге получим список списков схоих по полям выборки словарей
+    source_list = deepcopy(_source_list)
+    assistive_list = []
+    while source_list:
+        base_dict = source_list[0]
+        matches = [
+            match_dict for match_dict in source_list
+            if all([match_dict.get(key, None) == base_dict.get(key, None) for key in by_fields])
+        ]
+        assistive_list.append(matches)
+        for match_dict in matches:
+            if not match_dict in source_list: continue
+            source_list.remove(match_dict)
+
+    # Формируем итоговый список словарей
+    result = []
+    for group_list in assistive_list:
+        # Берем все поля выборки как основу словаря
+        cur_row = {
+            field: group_list[0][field] for field in by_fields
+            if field in group_list[0]
+        }
+        # Суммируем поля, указанные в sum_fields
+        for field in sum_fields:
+            cur_row[field] = column_sum(group_list, field)
+        result.append(cur_row)
+    return result
+
+
 if __name__ == '__main__':
 
     def _test_module():
