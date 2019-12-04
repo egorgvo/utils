@@ -74,11 +74,11 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
 
 def sort_list_of_dicts(lst, keys, reverse=False):
     """
-    Сортирует список словарей по ключам словаря.
-    В качестве ключей сортировки можно подавать несколько ключей словаря.
-    :param lst: Список словарей
-    :param keys: Ключи словаря
-    :return: Отсортированный по правилу сортировки список словарей
+    Sort list of dicts by fields names. Allowed multiple fields names.
+    :param lst: list of dicts
+    :param keys: fields names as sorting keys
+    :param reverse: reverse sorting flag
+    :return: sorted list of dicts
 
     >>> some_list = [{'order': 3, 'value': 3}, {'order': 1, 'value': 3}, {'order': 3, 'value': 1}]
     >>> sort_list_of_dicts(some_list, 'order,value')
