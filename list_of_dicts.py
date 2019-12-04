@@ -72,12 +72,14 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
         yield default
 
 
-def sort_list_of_dicts(lst, keys, reverse=False):
+def sort_list_of_dicts(lst, keys, reverse=False, default=None, **convert):
     """
     Sort list of dicts by fields names. Allowed multiple fields names.
     :param lst: list of dicts
     :param keys: fields names as sorting keys
     :param reverse: reverse sorting flag
+    :param default: default value for non existent fields. May be specified as dict {'field': 'default_value'} format
+    :param convert: dict of conversion (before comparison) rules
     :return: sorted list of dicts
 
     >>> some_list = [{'order': 3, 'value': 3}, {'order': 1, 'value': 3}, {'order': 3, 'value': 1}]
@@ -101,14 +103,30 @@ def sort_list_of_dicts(lst, keys, reverse=False):
     [{'order': 3, 'value': 3}, {'order': 3, 'value': 1}, {'order': 1, 'value': 3}]
     >>> sort_list_of_dicts(some_list, ('-order', 'value'))
     [{'order': 3, 'value': 1}, {'order': 3, 'value': 3}, {'order': 1, 'value': 3}]
+    >>> lst = [{"k1": "JKd", "k2": False}, {'k1': 'Ukz', 'k2': False}, {"k1": "aqd", "k2": True}, {"k1": "Asd", "k2": True}, {"k1": "weg", "k2": False, '1': 'tpue'}, {"k1": "lfe", "k2": True, '1': 'true'}]
+    >>> sort_list_of_dicts(lst, ('1', '-k2','k1'), default={'1': 'z'}, k1=str.lower)
+    [{'k1': 'weg', 'k2': False, '1': 'tpue'}, {'k1': 'lfe', 'k2': True, '1': 'true'}, {'k1': 'aqd', 'k2': True}, {'k1': 'Asd', 'k2': True}, {'k1': 'JKd', 'k2': False}, {'k1': 'Ukz', 'k2': False}]
+    >>> sort_list_of_dicts(lst, ('1', '-k2','k1'), default='', k1=str.lower)
+    [{'k1': 'aqd', 'k2': True}, {'k1': 'Asd', 'k2': True}, {'k1': 'JKd', 'k2': False}, {'k1': 'Ukz', 'k2': False}, {'k1': 'weg', 'k2': False, '1': 'tpue'}, {'k1': 'lfe', 'k2': True, '1': 'true'}]
     """
     keys = keys.split(',') if isinstance(keys, str) else keys
     keys_list = []
     for key in keys:
-        field, direction = (key[1:], -1) if key.startswith('-') else (key, 1)
+        field, direction = (key[1:], -1) if isinstance(key, str) and key.startswith('-') else (key, 1)
         keys_list.append(dict(direction=direction, field=field))
 
-    return sorted(lst, key=lambda x: [k['direction'] * x[k['field']] for k in keys_list], reverse=reverse)
+    def key(x):
+        result = []
+        for k in keys_list:
+            field = k['field']
+            k_default = default.get(field) if isinstance(default, dict) else default
+            value = x.get(field, k_default)
+            if field in convert:
+                value = convert[field](value)
+            result.append(k['direction'] * value)
+        return result
+
+    return sorted(lst, key=key, reverse=reverse)
 
 
 if __name__ == '__main__':
