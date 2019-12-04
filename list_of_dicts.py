@@ -87,11 +87,28 @@ def sort_list_of_dicts(lst, keys, reverse=False):
     [{'order': 1, 'value': 3}, {'order': 3, 'value': 1}, {'order': 3, 'value': 3}]
     >>> sort_list_of_dicts(some_list, 'order')
     [{'order': 1, 'value': 3}, {'order': 3, 'value': 3}, {'order': 3, 'value': 1}]
+    >>> sort_list_of_dicts(some_list, '-order,value')
+    [{'order': 3, 'value': 1}, {'order': 3, 'value': 3}, {'order': 1, 'value': 3}]
+    >>> sort_list_of_dicts(some_list, 'order,-value')
+    [{'order': 1, 'value': 3}, {'order': 3, 'value': 3}, {'order': 3, 'value': 1}]
+    >>> sort_list_of_dicts(some_list, '-order,-value')
+    [{'order': 3, 'value': 3}, {'order': 3, 'value': 1}, {'order': 1, 'value': 3}]
+    >>> sort_list_of_dicts(some_list, '-value,-order')
+    [{'order': 3, 'value': 3}, {'order': 1, 'value': 3}, {'order': 3, 'value': 1}]
+    >>> sort_list_of_dicts(some_list, '-value,-order', reverse=True)
+    [{'order': 3, 'value': 1}, {'order': 1, 'value': 3}, {'order': 3, 'value': 3}]
+    >>> sort_list_of_dicts(some_list, 'order', reverse=True)
+    [{'order': 3, 'value': 3}, {'order': 3, 'value': 1}, {'order': 1, 'value': 3}]
+    >>> sort_list_of_dicts(some_list, ('-order', 'value'))
+    [{'order': 3, 'value': 1}, {'order': 3, 'value': 3}, {'order': 1, 'value': 3}]
     """
     keys = keys.split(',') if isinstance(keys, str) else keys
-    if isinstance(keys, Iterable):
-        return sorted(lst, key=itemgetter(*keys), reverse=reverse)
-    return sorted(lst, key=itemgetter(keys), reverse=reverse)
+    keys_list = []
+    for key in keys:
+        field, direction = (key[1:], -1) if key.startswith('-') else (key, 1)
+        keys_list.append(dict(direction=direction, field=field))
+
+    return sorted(lst, key=lambda x: [k['direction'] * x[k['field']] for k in keys_list], reverse=reverse)
 
 
 if __name__ == '__main__':
