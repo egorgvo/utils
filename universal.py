@@ -6,6 +6,7 @@
 """
 
 import logging
+from itertools import chain
 
 logger = logging.getLogger()
 
@@ -31,6 +32,23 @@ def float_truncate(value, after_dot=0):
     [-1.0, -1.4, -1.45, -1.454, -1.4546]
     """
     return float(int(value * 10 ** after_dot)) / 10 ** after_dot
+
+
+def list_of_lists_unwind(some_list, iterator=False):
+    """
+    Unwind list of lists
+    >>> a = [[1, 2], [3, 4], [5]]
+    >>> list_of_lists_unwind(a)
+    [1, 2, 3, 4, 5]
+    >>> it = list_of_lists_unwind(a, iterator=True)
+    >>> assert '<itertools.chain' in str(it)
+    >>> list(it)
+    [1, 2, 3, 4, 5]
+    """
+    result = chain(*some_list)
+    if iterator:
+        return result
+    return list(result)
 
 
 if __name__ == '__main__':
