@@ -56,7 +56,10 @@ def iterate_over_hierarchy(value, hierarchy, hierarchy_separator='.', ignore_non
             break
 
         # Ступаем на уровень ниже
-        value = value[field]
+        try:
+            value = value[field]
+        except:
+            value = getattr(value, field)
 
         # Обработка последнего уровня иерерахии
         if i + 1 == len(hierarchy):
