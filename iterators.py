@@ -67,6 +67,10 @@ def iterate_over_hierarchy(value, hierarchy, hierarchy_separator='.', ignore_non
             break
 
 
+def safe_get(obj, hierarchy, default=None, hierarchy_separator='.'):
+    return next(iterate_over_hierarchy(obj, hierarchy, hierarchy_separator=hierarchy_separator), default)
+
+
 def chunks(iterable, n):
     """Yield n-sized iterators from iterable.
     Use map(list, chunks(...)) for list chunks."""
