@@ -18,7 +18,7 @@ class MongoAggregation(list):
         self.actual_fields = set()
         self.pipeline = pipeline if pipeline else []
 
-    def aggregate(self, collection='', allowDiskUse=False, as_list=False):
+    def aggregate(self, collection='', allowDiskUse=False, as_list=False, collation=None):
         if collection:
             self.collection = collection
         if allowDiskUse:
@@ -27,9 +27,9 @@ class MongoAggregation(list):
             logger.error('Агрегация невозможна: не указана коллекция')
             return
         if self.collection.__class__.__name__ == 'QuerySet':
-            result = self.collection.aggregate(*self.pipeline, allowDiskUse=self.allowDiskUse)
+            result = self.collection.aggregate(*self.pipeline, allowDiskUse=self.allowDiskUse, collation=collation)
         else:
-            result = self.collection.aggregate(self.pipeline, allowDiskUse=self.allowDiskUse)
+            result = self.collection.aggregate(self.pipeline, allowDiskUse=self.allowDiskUse, collation=collation)
         return list(result) if as_list else result
 
     def append(self, object=None, *args):
