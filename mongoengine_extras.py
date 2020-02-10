@@ -1,7 +1,7 @@
 import datetime
 import six
-from mongoengine.base import BaseField
 from mongoengine import StringField
+from mongoengine.base import BaseField, get_document as get_model
 
 
 class TimeField(StringField):
