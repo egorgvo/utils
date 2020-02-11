@@ -2,8 +2,8 @@ import six
 from functools import partial
 from marshmallow import ValidationError
 
-from iterators import safe_get
-from mongoengine_extras import get_model
+from .iterators import safe_get
+from .mongoengine_extras import get_model
 
 
 def get_hierarchy(hierarchy, default=None, convert=None, where=None):
