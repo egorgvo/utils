@@ -22,9 +22,9 @@ def get_hierarchy(hierarchy, default=None, convert=None, where=None):
     return partial(_get_hierarchy, hierarchy=hierarchy, default=default, convert=convert, where=where)
 
 
-def convert_to_instance(model, field='id', many=False, error='', primary_key='id'):
+def convert_to_instance(model, field='id', many=False, error='', primary_key='pk'):
 
-    def to_instance(id, context, model, field='id', many=False, error='', primary_key='id'):
+    def to_instance(id, context, model, field='id', many=False, error='', primary_key='pk'):
         if not error:
             error = 'Could not find document.'
         if isinstance(model, six.string_types):
