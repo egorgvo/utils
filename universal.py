@@ -11,6 +11,32 @@ from itertools import chain
 logger = logging.getLogger()
 
 
+def default(value, default=None, empties=None):
+    """
+    Если значение не заполнено, возвращает значение по умолчанию.
+    :param value: Исходное значение
+    :param default: Значение по умолчанию
+    :param empties: Список значений, которые необходимо воспринимать как пустые
+    :type empties: list
+    :return: Исходное значение, либо значение по умолчанию
+    >>> default('2', '3')
+    '2'
+    >>> default('')
+
+    >>> default('', '3')
+    '3'
+    >>> default('', '3', empties=[None])
+    ''
+    >>> default(None, '3', empties=[None])
+    '3'
+    """
+    if empties and value in empties:
+        return default
+    elif not empties and not value:
+        return default
+    return value
+
+
 def join_nonempty(iterable, binder=', '):
     """
     Работает аналогично join, но объединяет только непустые значения
