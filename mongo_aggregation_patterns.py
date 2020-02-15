@@ -173,8 +173,16 @@ def eq(first_expression, second_expression=True):
     return {'$eq': [first_expression, second_expression]}
 
 
-def gt(first_expression, second_expression=0):
+def gt(first_expression, second_expression=None):
+    if second_expression is None:
+        return {'$gt': first_expression}
     return {'$gt': [first_expression, second_expression]}
+
+
+def gte(first_expression, second_expression=None):
+    if second_expression is None:
+        return {'$gte': first_expression}
+    return {'$gte': [first_expression, second_expression]}
 
 
 def ne(first_expression, second_expression=True):
