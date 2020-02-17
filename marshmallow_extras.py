@@ -35,6 +35,8 @@ def convert_to_instance(model, field='id', many=False, error='', primary_key='pk
         try:
             if many:
                 try:
+                    if not (id.startswith('[') and id.endswith(']')):
+                        raise Exception
                     id = loads(id)
                 except:
                     id = str_to_list(id)
