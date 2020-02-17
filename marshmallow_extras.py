@@ -40,7 +40,7 @@ def convert_to_instance(model, field='id', many=False, error='', primary_key='pk
                     id = str_to_list(id)
                 id = list(set(id))
                 # Search with filter is faster
-                items = list(model.objects.filter(**{primary_key: {'$in': id}}))
+                items = list(model.objects.filter(**{f'{primary_key}__in': id}))
                 if len(items) == len(id):
                     return items
                 # If something has not been found - we need to figure out the guilty
