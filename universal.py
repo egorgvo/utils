@@ -8,6 +8,8 @@
 import logging
 from itertools import chain
 
+import six
+
 logger = logging.getLogger()
 
 
@@ -48,7 +50,7 @@ def join_nonempty(iterable, binder=', '):
 
 
 def str_to_list(variable, sep=','):
-    return variable.split(sep) if isinstance(variable, str) else variable
+    return variable.split(sep) if isinstance(variable, six.string_types) else variable
 
 
 def float_truncate(value, after_dot=0):
