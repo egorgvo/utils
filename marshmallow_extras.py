@@ -1,9 +1,12 @@
-import six
 from functools import partial
+from json import loads
+
+import six
 from marshmallow import ValidationError
 
 from .iterators import safe_get
 from .mongoengine_extras import get_model
+from .universal import str_to_list
 
 
 def get_hierarchy(hierarchy, default=None, convert=None, where=None):
@@ -31,6 +34,10 @@ def convert_to_instance(model, field='id', many=False, error='', primary_key='pk
             model = get_model(model)
         try:
             if many:
+                try:
+                    id = loads(id)
+                except:
+                    id = str_to_list(id)
                 id = list(set(id))
                 # Search with filter is faster
                 items = list(model.objects.filter(**{primary_key: {'$in': id}}))
