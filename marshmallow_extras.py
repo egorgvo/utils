@@ -4,25 +4,36 @@ from json import loads
 import six
 from marshmallow import ValidationError
 
-from .iterators import safe_get
+from .iterators import safe_get, iterate_over_hierarchy
 from .mongoengine_extras import get_model
 from .universal import str_to_list
 
 
-def get_hierarchy(hierarchy, default=None, convert=None, where=None):
-    def _get_hierarchy(obj, context, hierarchy, default=None, convert=None, where=None):
-        if where:
-            for k, v in where.items():
-                if safe_get(obj, k) == v:
-                    continue
-                return default
+def get_hierarchy(hierarchy, many=False, default="%@#not_specified#@%", convert=None, convert_item=None):
+    def _get_single(obj, context, hierarchy, default=None, convert=None):
         value = safe_get(obj, hierarchy, default)
         if value == default:
             return value
         elif convert:
             return convert(value)
         return value
-    return partial(_get_hierarchy, hierarchy=hierarchy, default=default, convert=convert, where=where)
+
+    def _get_many(obj, context, hierarchy, default=[], convert=None, convert_item=None):
+        result = list(iterate_over_hierarchy(obj, hierarchy))
+        if not result:
+            return default
+        if convert_item:
+            result = [convert_item(value) for value in result]
+        if convert:
+            result = convert(result)
+        return result
+
+    # default is different for single and many. If it is specified - pass it, otherwise use functions defaults.
+    kwargs = {} if default == "%@#not_specified#@%" else {'default': default}
+    if many:
+        return partial(_get_many, hierarchy=hierarchy, convert=convert, convert_item=convert_item, **kwargs)
+    else:
+        return partial(_get_single, hierarchy=hierarchy, convert=convert, **kwargs)
 
 
 def convert_to_instance(model, field='id', many=False, error='', primary_key='pk'):
