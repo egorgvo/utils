@@ -9,6 +9,22 @@ from .mongoengine_extras import get_model
 from .universal import str_to_list
 
 
+def convert_to_embed(embed_model, many=False, default="%@#not_specified#@%"):
+
+    def to_embed(obj, context, embed_model, many=False, default="%@#not_specified#@%"):
+        if not obj:
+            return ([] if many else None) if default == "%@#not_specified#@%" else default
+        objs = obj if many else [obj]
+        result = [embed_model(**_obj) for _obj in objs]
+        return result if many else result[0]
+
+    # Get model
+    if isinstance(embed_model, six.string_types):
+        embed_model = get_model(embed_model)
+    # Return partial
+    return partial(to_embed, embed_model=embed_model, many=many, default=default)
+
+
 def get_hierarchy(hierarchy, many=False, default="%@#not_specified#@%", convert=None, convert_item=None):
     def _get_single(obj, context, hierarchy, default=None, convert=None):
         value = safe_get(obj, hierarchy, default)
