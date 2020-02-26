@@ -57,8 +57,6 @@ def convert_to_instance(model, field='id', many=False, error='', primary_key='pk
     def to_instance(id, context, model, field='id', many=False, error='', primary_key='pk'):
         if not error:
             error = 'Could not find document.'
-        if isinstance(model, six.string_types):
-            model = get_model(model)
         try:
             if many:
                 try:
@@ -82,6 +80,8 @@ def convert_to_instance(model, field='id', many=False, error='', primary_key='pk
         except Exception as exc:
             raise ValidationError(error, field_name=field)
 
+    if isinstance(model, six.string_types):
+        model = get_model(model)
     return partial(to_instance, model=model, field=field, many=many, error=error, primary_key=primary_key)
 
 
