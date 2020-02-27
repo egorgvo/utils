@@ -8,7 +8,7 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from yandex_mailer.config import YANDEX_SMTP_SERVER
+from .config import YANDEX_SMTP_SERVER
 
 
 class YandexMailer():
