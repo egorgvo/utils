@@ -1,1 +1,1 @@
-from yandex_mailer.YandexMailer import YandexMailer
+from .YandexMailer import YandexMailer
