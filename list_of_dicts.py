@@ -4,8 +4,9 @@
 """Модуль для функций обработки списка словарей"""
 
 from copy import deepcopy
-from collections import Iterable
-from operator import itemgetter
+from operator import eq, ne
+
+from .universal import str_to_list
 
 
 def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
@@ -20,6 +21,17 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
     :param kwargs: Именованные аргументы, которыми обновится словарь values_dict.
     Если values_dict не задан kwargs берутся в качестве values_dict.
     :return: Найденное совпадение (словарь или другой объект), либо default, если задано. Иначе ошибка итерации.
+
+    >>> next(find_dict_in_list([{'a': 1}], a=1), None)
+    {'a': 1}
+    >>> next(find_dict_in_list([{'a': 1}], a__ne=0), None)
+    {'a': 1}
+    >>> next(find_dict_in_list([{'a': 1}], a__ne=1), None)
+
+    >>> next(find_dict_in_list([{'a': 1}], b__ne=1), None)
+    {'a': 1}
+    >>> next(find_dict_in_list([{'a': 1}], b__eq=1), None)
+
     """
     values_dict = deepcopy(values_dict)
     if not values_dict:
@@ -33,35 +45,58 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
 
     if not by_fields:
         by_fields = values_dict.keys()
+    by_fields = str_to_list(by_fields)
 
-    by_fields = by_fields.split(',') \
-        if isinstance(by_fields, str) else by_fields
+    if not all(field in values_dict for field in by_fields):
+        return
 
-    if not all(field in values_dict for field in by_fields): return
+    def field_exists(obj, field):
+        exists = hasattr(obj, field)
+        if exists:
+            return True
+        try:
+            return field in obj
+        except Exception as exc:
+            return False
+
+    def get_value(obj, field):
+        return obj[field] if isinstance(obj, dict) else getattr(obj, field)
+
+    operators_map = {
+        '__eq': eq,
+        '__ne': ne
+    }
+    operators_allow_nonexistence = [ne]
 
     any_matches = False
     for _dict in list_of_dicts:
         for field in by_fields:
-            targer_field_name = field
-            not_eq = field.endswith('__ne')
-            if not_eq:
-                field = field[:-4]
-                # может отсутствовать, проверяем остальные поля
-                if field not in _dict: continue
+            target_field = field
+            for ending, operator in operators_map.items():
+                if not field.endswith(ending):
+                    continue
+                field = field[:-len(ending)]
+                break
+            else:
+                operator = eq
+
+            # Проверяем, что поле существует внутри объекта
+            exists = field_exists(_dict, field)
+            # для некоторых операторов допустимо отсутствие поля
+            if not exists and operator in operators_allow_nonexistence:
+                continue
             # строгое существование, остальные поля можно не проверять
-            elif field not in _dict: break
+            elif not exists:
+                break
 
-            # Сравниваемые значения
-            targer_value = values_dict[targer_field_name] if isinstance(values_dict, dict) \
-                else getattr(values_dict, targer_field_name)
-            value = _dict[field] if isinstance(_dict, dict) else getattr(_dict, field)
-
-            # Соответствие значению
-            if not_eq:
-                # Не должно быть равно
-                if targer_value == value: break
-            # Должно быть равно
-            elif targer_value != value: break
+            # Получаем сравниваемые значения
+            target_value = get_value(values_dict, target_field)
+            value = get_value(_dict, field)
+            # Сравниваем значения
+            if operator(target_value, value):
+                continue
+            # Иначе объект не подходит фильтру
+            break
         else:
             # совпадение - словарь
             yield _dict
@@ -150,22 +185,22 @@ def group_list_of_dicts(_source_list, by_fields='', sum_fields=''):
 
     >>> source_list = [{'a': 1, 'b': 2, 'c': 5}, {'a': 1, 'b': 3, 'c': 5}, {'a': 1, 'b': 2, 'c': 6}, {'a': 1, 'b': 2, 'c': 5}]
     >>> group_list_of_dicts(source_list, 'a,b,c')
-    [{'a': 1, 'c': 5, 'b': 2}, {'a': 1, 'c': 5, 'b': 3}, {'a': 1, 'c': 6, 'b': 2}]
+    [{'a': 1, 'b': 2, 'c': 5}, {'a': 1, 'b': 3, 'c': 5}, {'a': 1, 'b': 2, 'c': 6}]
     >>> group_list_of_dicts(source_list, 'a,b,c', 'c')
-    [{'a': 1, 'c': 10, 'b': 2}, {'a': 1, 'c': 5, 'b': 3}, {'a': 1, 'c': 6, 'b': 2}]
+    [{'a': 1, 'b': 2, 'c': 10}, {'a': 1, 'b': 3, 'c': 5}, {'a': 1, 'b': 2, 'c': 6}]
     >>> group_list_of_dicts(source_list, 'a,b')
     [{'a': 1, 'b': 2}, {'a': 1, 'b': 3}]
     >>> group_list_of_dicts(source_list, 'a,b', 'c')
-    [{'a': 1, 'c': 16, 'b': 2}, {'a': 1, 'c': 5, 'b': 3}]
+    [{'a': 1, 'b': 2, 'c': 16}, {'a': 1, 'b': 3, 'c': 5}]
     >>> group_list_of_dicts(source_list, 'a', 'b,c')
-    [{'a': 1, 'c': 21, 'b': 9}]
+    [{'a': 1, 'b': 9, 'c': 21}]
     >>> group_list_of_dicts(source_list, 'a,d', 'b,c')
-    [{'a': 1, 'c': 21, 'b': 9}]
+    [{'a': 1, 'b': 9, 'c': 21}]
     >>> group_list_of_dicts(source_list, 'a,d,c', 'b,c')
     [{'a': 1, 'c': 15, 'b': 7}, {'a': 1, 'c': 6, 'b': 2}]
     >>> source_list[-1]['d'] = 1
     >>> group_list_of_dicts(source_list, 'a,d', 'b,c')
-    [{'a': 1, 'c': 16, 'b': 7}, {'a': 1, 'c': 5, 'b': 2, 'd': 1}]
+    [{'a': 1, 'b': 7, 'c': 16}, {'a': 1, 'd': 1, 'b': 2, 'c': 5}]
 
     :param _source_list: Исходный список словарей
     :param by_fields: Поля выборки
