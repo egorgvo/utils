@@ -5,7 +5,6 @@ import six
 from marshmallow import ValidationError
 
 from .iterators import safe_get, iterate_over_hierarchy
-from .mongoengine_extras import get_model
 from .universal import str_to_list
 
 
@@ -20,6 +19,7 @@ def convert_to_embed(embed_model, many=False, default="%@#not_specified#@%"):
 
     # Get model
     if isinstance(embed_model, six.string_types):
+        from .mongoengine_extras import get_model
         embed_model = get_model(embed_model)
     # Return partial
     return partial(to_embed, embed_model=embed_model, many=many, default=default)
@@ -81,6 +81,7 @@ def convert_to_instance(model, field='id', many=False, error='', primary_key='pk
             raise ValidationError(error, field_name=field)
 
     if isinstance(model, six.string_types):
+        from .mongoengine_extras import get_model
         model = get_model(model)
     return partial(to_instance, model=model, field=field, many=many, error=error, primary_key=primary_key)
 
