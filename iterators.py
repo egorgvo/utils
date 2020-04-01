@@ -28,6 +28,14 @@ def iterate_over_hierarchy(value, hierarchy, hierarchy_separator='.', ignore_non
     >>> list(iterate_over_hierarchy(a, 'a.f.f.g.s'))
     [3, 5, 89]
     """
+    def has_attr(obj, attr):
+        if not obj:
+            return False
+        try:
+            return attr in obj
+        except:
+            return hasattr(obj, attr)
+
     # Предварительное преобразование списка полей иерархии в список
     if not isinstance(hierarchy, list):
         hierarchy = hierarchy.split(hierarchy_separator)
@@ -50,7 +58,7 @@ def iterate_over_hierarchy(value, hierarchy, hierarchy_separator='.', ignore_non
             break
 
         # Если поле отсутствует
-        elif not value or field not in value:
+        elif not has_attr(value, field):
             if ignore_nonexistent: break
             yield None
             break
