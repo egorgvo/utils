@@ -10,6 +10,7 @@ def iterate_over(arg_name):
     """
     def iterate_this(func):
         func.gw_method = func.__name__
+
         @wraps(func)
         def wrapper(*args, **kwargs):
             if arg_name in kwargs:
@@ -25,3 +26,24 @@ def iterate_over(arg_name):
                     func(*new_args, **kwargs)
         return wrapper
     return iterate_this
+
+
+def try_again(exception, retry_attempts=1, raise_exc=True):
+    """
+    Use as decorator to exit process if
+    function takes longer than s seconds
+    """
+    def outer(fn):
+        fn.gw_method = fn.__name__
+
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            for i in range(retry_attempts + 1):
+                try:
+                    return fn(*args, **kwargs)
+                except exception as exc:
+                    if raise_exc and i == retry_attempts:
+                        raise exc
+                    continue
+        return wrapper
+    return outer
