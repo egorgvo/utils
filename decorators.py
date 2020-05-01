@@ -28,7 +28,7 @@ def iterate_over(arg_name):
     return iterate_this
 
 
-def try_again(exception, retry_attempts=1, raise_exc=True):
+def try_again(exceptions, retry_attempts=1, raise_exc=True):
     """
     Decorator to re-run function if it fails with exception
     """
@@ -37,10 +37,14 @@ def try_again(exception, retry_attempts=1, raise_exc=True):
 
         @wraps(fn)
         def wrapper(*args, **kwargs):
+            _exceptions = [exceptions] if issubclass(exceptions, Exception) else exceptions
+            _exceptions = tuple(_exceptions)
             for i in range(retry_attempts + 1):
                 try:
                     return fn(*args, **kwargs)
-                except exception as exc:
+                except Exception as exc:
+                    if not isinstance(exc, _exceptions):
+                        raise exc
                     if raise_exc and i == retry_attempts:
                         raise exc
                     continue
