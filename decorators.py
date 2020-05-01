@@ -30,8 +30,7 @@ def iterate_over(arg_name):
 
 def try_again(exception, retry_attempts=1, raise_exc=True):
     """
-    Use as decorator to exit process if
-    function takes longer than s seconds
+    Decorator to re-run function if it fails with exception
     """
     def outer(fn):
         fn.gw_method = fn.__name__
