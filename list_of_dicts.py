@@ -39,6 +39,12 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
     >>> next(find_dict_in_list([{'a': 1}], a__type=str), None)
     >>> next(find_dict_in_list([{'a': 1}], a__type=(str, int)), None)
     {'a': 1}
+    >>> next(find_dict_in_list([{'a': 1}], __type=dict), None)
+    {'a': 1}
+    >>> next(find_dict_in_list([{'a': 1}], __type=list), None)
+    >>> next(find_dict_in_list([1], __ne=1), None)
+    >>> next(find_dict_in_list([{'a': 1}], __ne=1), None)
+    {'a': 1}
     """
     values_dict = deepcopy(values_dict)
     if not values_dict:
@@ -79,14 +85,24 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
     any_matches = False
     for _dict in list_of_dicts:
         for field in by_fields:
+            is_obj_check = False
             target_field = field
             for ending, operator in operators_map.items():
                 if not field.endswith(ending):
                     continue
                 field = field[:-len(ending)]
+                is_obj_check = not bool(field)
                 break
             else:
                 operator = eq
+
+            # Получаем сравниваемые значения
+            target_value = get_value(values_dict, target_field)
+
+            if is_obj_check:
+                if operator(_dict, target_value):
+                    continue
+                break
 
             # Проверяем, что поле существует внутри объекта
             exists = field_exists(_dict, field)
@@ -97,8 +113,6 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
             elif not exists:
                 break
 
-            # Получаем сравниваемые значения
-            target_value = get_value(values_dict, target_field)
             value = get_value(_dict, field)
             # Сравниваем значения
             if operator(value, target_value):
