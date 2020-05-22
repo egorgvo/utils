@@ -34,7 +34,11 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
     >>> next(find_dict_in_list([{'a': 1}], b__ne=1), None)
     {'a': 1}
     >>> next(find_dict_in_list([{'a': 1}], b__eq=1), None)
-
+    >>> next(find_dict_in_list([{'a': 1}], a__type=int), None)
+    {'a': 1}
+    >>> next(find_dict_in_list([{'a': 1}], a__type=str), None)
+    >>> next(find_dict_in_list([{'a': 1}], a__type=(str, int)), None)
+    {'a': 1}
     """
     values_dict = deepcopy(values_dict)
     if not values_dict:
@@ -67,7 +71,8 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
 
     operators_map = {
         '__eq': eq,
-        '__ne': ne
+        '__ne': ne,
+        '__type': isinstance,
     }
     operators_allow_nonexistence = [ne]
 
@@ -96,7 +101,7 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
             target_value = get_value(values_dict, target_field)
             value = get_value(_dict, field)
             # Сравниваем значения
-            if operator(target_value, value):
+            if operator(value, target_value):
                 continue
             # Иначе объект не подходит фильтру
             break
