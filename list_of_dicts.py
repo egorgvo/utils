@@ -6,7 +6,10 @@
 from copy import deepcopy
 from operator import eq, ne
 
-from .universal import str_to_list
+try:
+    from .universal import str_to_list
+except:
+    from universal import str_to_list
 
 
 def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
