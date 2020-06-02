@@ -34,7 +34,7 @@ class YandexMailer():
             msg.attach(attachment)
 
         # Отправка
-        smtp = SMTP_SSL()
+        smtp = SMTP_SSL(YANDEX_SMTP_SERVER)
         smtp.connect(YANDEX_SMTP_SERVER)
         smtp.login(sender_email, password)
         smtp.sendmail(sender_email, recipients_emails, msg.as_string())
