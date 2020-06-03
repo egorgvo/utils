@@ -5,7 +5,19 @@
 Модуль с вспомогательными функциями-итераторами
 """
 
+from collections.abc import Iterable
+
 from itertools import chain, islice
+
+
+def is_iterable(obj):
+    return isinstance(obj, Iterable)
+
+
+def iterable(obj):
+    if is_iterable(obj):
+        return obj
+    return [obj]
 
 
 def iterate_over_hierarchy(value, hierarchy, hierarchy_separator='.', ignore_nonexistent=True):
