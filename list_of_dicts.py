@@ -49,6 +49,10 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
 
     >>> next(find_dict_in_list([{'a': 1}], a__in=[2, 1, 4]), None)
     {'a': 1}
+    >>> next(find_dict_in_list([{'a': 1}], a__nin=[2, 1, 4]), None)
+
+    >>> next(find_dict_in_list([{'a': 1}], a__nin=[2, 4]), None)
+    {'a': 1}
     """
     values_dict = deepcopy(values_dict)
     if not values_dict:
@@ -84,6 +88,7 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
         '__ne': ne,
         '__type': isinstance,
         '__in': lambda x, y: contains(y, x),
+        '__nin': lambda x, y: not contains(y, x),
     }
     operators_allow_nonexistence = [ne]
 
