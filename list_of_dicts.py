@@ -4,7 +4,7 @@
 """Модуль для функций обработки списка словарей"""
 
 from copy import deepcopy
-from operator import eq, ne
+from operator import eq, ne, contains
 
 try:
     from .universal import str_to_list
@@ -45,6 +45,10 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
     >>> next(find_dict_in_list([1], __ne=1), None)
     >>> next(find_dict_in_list([{'a': 1}], __ne=1), None)
     {'a': 1}
+    >>> next(find_dict_in_list([{'a': 1}], a__in=[2, 4]), None)
+
+    >>> next(find_dict_in_list([{'a': 1}], a__in=[2, 1, 4]), None)
+    {'a': 1}
     """
     values_dict = deepcopy(values_dict)
     if not values_dict:
@@ -79,6 +83,7 @@ def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',
         '__eq': eq,
         '__ne': ne,
         '__type': isinstance,
+        '__in': lambda x, y: contains(y, x),
     }
     operators_allow_nonexistence = [ne]
 
