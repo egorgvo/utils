@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
+"""
+Module is deprecated. Use https://github.com/egorgvo/mongo_aggregation instead.
+"""
+
 from copy import deepcopy
 
 

@@ -4,7 +4,7 @@
 """
 Module with CDATA implementation
 Usage:
-from utils.xml_etree_extras import ElementTree, CDATA
+from snuff_utils.xml_etree_extras import ElementTree, CDATA
 root = ElementTree.Element('Root')
 tag = SubElement(ad, "Description")
 cdata_raw = "<p>text</p>"

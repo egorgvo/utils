@@ -11,7 +11,7 @@ from csv import DictReader
 try:
     from .universal import str_to_list
 except:
-    from universal import str_to_list
+    from snuff_utils.universal import str_to_list
 
 
 def yesno_question(question, example='y/n', retry=True, retry_message='',

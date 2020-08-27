@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 
+"""
+Module is deprecated. Use https://github.com/egorgvo/mongo_aggregation instead.
+"""
+
 import logging
 from copy import copy
 from itertools import chain, combinations, product

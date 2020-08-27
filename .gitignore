@@ -1,7 +1,18 @@
-*~
-__pycache__
-**/__pycache__
+# Virtual environment
+.venv
+venv
+
+# Environment variables
+.env
+
+# Python
+__pycache__/
 *.pyc
-**/.idea
-**/venv
-*.env
+
+# PyCharm
+.idea/
+
+# PYPI
+build/
+dist/
+*.egg-info/

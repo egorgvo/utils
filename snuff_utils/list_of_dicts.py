@@ -9,7 +9,7 @@ from operator import eq, ne, contains
 try:
     from .universal import str_to_list
 except:
-    from universal import str_to_list
+    from snuff_utils.universal import str_to_list
 
 
 def find_dict_in_list(list_of_dicts, values_dict=None, by_fields='',

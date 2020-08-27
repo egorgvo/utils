@@ -1,5 +1,9 @@
 # coding=utf-8
 
+"""
+Module is deprecated. Use https://github.com/egorgvo/mongo_aggregation instead.
+"""
+
 
 class MongoMatchFilter(dict):
     """
