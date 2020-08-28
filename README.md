@@ -36,6 +36,33 @@ timer.stop().print_summary()
 # [2017-10-09 17:06:10 INFO] PROFILING: whole_period: 5000, first block: 3000, second block: 2000, third block: 2000
 ```
 
+## Flask functions
+
+### token_required - Bearer token decorator
+
+Decorator that checks Bearer (static) Authorization token
+
+Usage:
+```python
+import os
+
+from dotenv import load_dotenv
+from flask_restful import Resource
+from snuff_utils.flask_decorators import token_required
+
+# Get token from .env file
+load_dotenv()
+MY_TOKEN = os.getenv('MY_TOKEN', '')
+
+
+class CallbackEvents(Resource):
+
+    @token_required(MY_TOKEN)
+    def post(self):
+        # some code here
+        return {}
+```
+
 ## Other functions
 Other functions is not described yet. You can see them in the corresponding modules. 
 Some of them have descriptions in their docstrings.
