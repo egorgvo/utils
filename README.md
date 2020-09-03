@@ -11,7 +11,10 @@ pip install -i shuff-utils
 `dict` that allows you to call its keys with the dot.
 
 ```python
-d = {'a': 'test'}
+d = DottedDict({'a': 'test'})
+d.a
+# 'test'
+d = DottedDict(a='test')
 d.a
 # 'test'
 ```
