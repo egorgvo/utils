@@ -70,5 +70,13 @@ class CallbackEvents(Resource):
 Other functions is not described yet. You can see them in the corresponding modules. 
 Some of them have descriptions in their docstrings.
 
+## Changelog
+
+### 1.0.3
+
+- `marshmallow_extras.convert` now can take many functions as arguments. 
+- Added `marshmallow_extras.convert_items` function. 
+- Added `marshmallow_extras.apply` function - with it `deserialize` parameter can apply many functions to value.
+
 ## Naming
 The package is named after Slipknot's song. Thanks to the band, it helps a lot.

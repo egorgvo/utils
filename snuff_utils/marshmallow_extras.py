@@ -1,3 +1,4 @@
+from copy import deepcopy
 from functools import partial
 from json import loads
 
@@ -106,13 +107,28 @@ def split_str(sep=',', convert=None, validate=None, field='id', error=''):
     return partial(_get_hierarchy, sep=sep, convert=convert, validate=validate, field=field, error=error)
 
 
-def convert(convert, field='id', error=''):
-    def _get_hierarchy(obj, context, convert, field='id', error=''):
+def convert(*funcs, for_elements=False, field='id', error=''):
+    def _convert(obj, context, funcs, field='id', error=''):
         if not error:
             error = 'Unable to get value.'
-        try:
-            value = convert(obj)
-        except Exception as exc:
-            raise ValidationError(error, field_name=field)
+        value = obj
+        for func in funcs:
+            try:
+                value = [func(v) for v in value] if for_elements else func(value)
+            except Exception as exc:
+                raise ValidationError(error, field_name=field)
         return value
-    return partial(_get_hierarchy, convert=convert, field=field, error=error)
+    return partial(_convert, funcs=funcs, field=field, error=error)
+
+
+def convert_items(*funcs, field='id', error=''):
+    return convert(*funcs, for_elements=True, field=field, error=error)
+
+
+def apply(*actions):
+    def _apply(obj, context, actions):
+        _obj = deepcopy(obj)
+        for action in actions:
+            _obj = action(_obj, context)
+        return _obj
+    return partial(_apply, actions=actions)
