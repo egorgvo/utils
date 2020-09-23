@@ -53,9 +53,10 @@ def get_hierarchy(hierarchy, many=False, default="%@#not_specified#@%", convert=
         return partial(_get_single, hierarchy=hierarchy, convert=convert, **kwargs)
 
 
-def convert_to_instance(model, field='id', many=False, error='', primary_key='pk'):
+def convert_to_instance(model, field='id', many=False, error='', primary_key='pk', **extended_filter):
 
-    def to_instance(id, context, model, field='id', many=False, error='', primary_key='pk'):
+    def to_instance(id, context, model, field='id', many=False, error='', primary_key='pk',
+                    extended_filter=extended_filter):
         if not error:
             error = 'Could not find document.'
         try:
@@ -68,23 +69,24 @@ def convert_to_instance(model, field='id', many=False, error='', primary_key='pk
                     id = str_to_list(id)
                 id = list(set(id))
                 # Search with filter is faster
-                items = list(model.objects.filter(**{f'{primary_key}__in': id}))
+                items = list(model.objects.filter(**{f'{primary_key}__in': id}, **extended_filter))
                 if len(items) == len(id):
                     return items
                 # If something has not been found - we need to figure out the guilty
                 # Get method will do this explicitly
                 # It will be longer but it doesn't matter - there's an error anyway
                 else:
-                    return [model.objects.get(**{primary_key: _id}) for _id in id]
+                    return [model.objects.get(**{primary_key: _id}, **extended_filter) for _id in id]
             else:
-                return model.objects.get(**{primary_key: id})
+                return model.objects.get(**{primary_key: id}, **extended_filter)
         except Exception as exc:
             raise ValidationError(error, field_name=field)
 
     if isinstance(model, six.string_types):
         from .mongoengine_extras import get_model
         model = get_model(model)
-    return partial(to_instance, model=model, field=field, many=many, error=error, primary_key=primary_key)
+    return partial(to_instance, model=model, field=field, many=many, error=error, primary_key=primary_key,
+                   extended_filter=extended_filter)
 
 
 def split_str(sep=',', convert=None, validate=None, field='id', error=''):

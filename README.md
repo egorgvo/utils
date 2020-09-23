@@ -72,11 +72,27 @@ Some of them have descriptions in their docstrings.
 
 ## Changelog
 
+### 1.0.4
+
+- Added `extended_filter` parameter to `marshmallow_extras.convert_to_instance`.
+
 ### 1.0.3
 
 - `marshmallow_extras.convert` now can take many functions as arguments. 
 - Added `marshmallow_extras.convert_items` function. 
 - Added `marshmallow_extras.apply` function - with it `deserialize` parameter can apply many functions to value.
+
+### 1.0.2
+
+- Project directories included.
+
+### 1.0.1
+
+- Updated `token_required` decorator.
+
+### 1.0.0
+
+- Init version.
 
 ## Naming
 The package is named after Slipknot's song. Thanks to the band, it helps a lot.
