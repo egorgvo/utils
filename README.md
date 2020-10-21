@@ -66,11 +66,64 @@ class CallbackEvents(Resource):
         return {}
 ```
 
+## date and time
+
+### localize
+
+Converts naive time to local time.
+
+```python
+localize(some_date, new_timezone='UTC', force=False)
+```
+ 
+`force` param forces timezone replacement to new_timezone.
+
+```python
+from datetime import datetime
+from pytz import UTC
+date = datetime(2019, 12, 12, 2, 34)
+localize(date)
+# datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<UTC>)
+localize(date, UTC)
+# datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<UTC>)
+localize(date, 'Europe/Samara')
+# datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<DstTzInfo 'Europe/Samara' LMT+3:20:00 STD>)
+date = localize(date, UTC)
+localize(date, 'Europe/Samara')
+# datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<UTC>)
+localize(date, 'Europe/Samara', force=True)
+# datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<DstTzInfo 'Europe/Samara' LMT+3:20:00 STD>)
+```
+
+### as_timezone
+
+Returns the same UTC time as self, but in as_tz’s local time. Inherits `datetime.astimezone` behaviour.
+
+```python
+as_timezone(source_date, as_tz='UTC', source_tz_by_default='UTC')
+```
+    
+```python
+>>> from datetime import datetime
+>>> from pytz import UTC
+>>> date = datetime(2019, 12, 12, 2, 34)
+>>> as_timezone(date, UTC)
+datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<UTC>)
+>>> as_timezone(date, 'Europe/Samara')
+datetime.datetime(2019, 12, 12, 6, 34, tzinfo=<DstTzInfo 'Europe/Samara' +04+4:00:00 STD>)
+>>> as_timezone(date, 'Europe/Samara', source_tz_by_default='Europe/Samara')
+datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<DstTzInfo 'Europe/Samara' +04+4:00:00 STD>)
+```
+
 ## Other functions
 Other functions is not described yet. You can see them in the corresponding modules. 
 Some of them have descriptions in their docstrings.
 
 ## Changelog
+
+### 1.0.5
+
+- Fixed 'date_and_time.localize' behaviour for non-pytz timezones. Added tests.
 
 ### 1.0.4
 

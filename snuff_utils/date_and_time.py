@@ -27,6 +27,18 @@ def _timezone(timezone_info):
 
 
 def as_timezone(source_date, as_tz='UTC', source_tz_by_default='UTC'):
+    """Returns the same UTC time as self, but in as_tz’s local time
+
+    >>> from datetime import datetime
+    >>> from pytz import UTC
+    >>> date = datetime(2019, 12, 12, 2, 34)
+    >>> as_timezone(date, UTC)
+    datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<UTC>)
+    >>> as_timezone(date, 'Europe/Samara')
+    datetime.datetime(2019, 12, 12, 6, 34, tzinfo=<DstTzInfo 'Europe/Samara' +04+4:00:00 STD>)
+    >>> as_timezone(date, 'Europe/Samara', source_tz_by_default='Europe/Samara')
+    datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<DstTzInfo 'Europe/Samara' +04+4:00:00 STD>)
+    """
     as_tz = _timezone(as_tz)
     if not source_date.tzinfo:
         source_date = source_date.replace(tzinfo=_timezone(source_tz_by_default))
@@ -34,12 +46,30 @@ def as_timezone(source_date, as_tz='UTC', source_tz_by_default='UTC'):
 
 
 def localize(some_date, new_timezone='UTC', force=False):
+    """
+    Convert naive time to local time. 'force' param forces timezone replacement to new_timezone.
+
+    >>> from datetime import datetime
+    >>> from pytz import UTC
+    >>> date = datetime(2019, 12, 12, 2, 34)
+    >>> localize(date)
+    datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<UTC>)
+    >>> localize(date, UTC)
+    datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<UTC>)
+    >>> localize(date, 'Europe/Samara')
+    datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<DstTzInfo 'Europe/Samara' LMT+3:20:00 STD>)
+    >>> date = localize(date, UTC)
+    >>> localize(date, 'Europe/Samara')
+    datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<UTC>)
+    >>> localize(date, 'Europe/Samara', force=True)
+    datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<DstTzInfo 'Europe/Samara' LMT+3:20:00 STD>)
+    """
     if some_date.tzinfo and (not force or not new_timezone):
         return some_date
     if not new_timezone:
         new_timezone = UTC
     new_timezone = _timezone(new_timezone)
-    return new_timezone.localize(some_date.replace(tzinfo=None))
+    return some_date.replace(tzinfo=new_timezone)
 
 
 def duration(open_date, close_date=None, time_unit='seconds'):
