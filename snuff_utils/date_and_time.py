@@ -37,7 +37,7 @@ def as_timezone(source_date, as_tz='UTC', source_tz_by_default='UTC'):
     >>> as_timezone(date, 'Europe/Samara')
     datetime.datetime(2019, 12, 12, 6, 34, tzinfo=<DstTzInfo 'Europe/Samara' +04+4:00:00 STD>)
     >>> as_timezone(date, 'Europe/Samara', source_tz_by_default='Europe/Samara')
-    datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<DstTzInfo 'Europe/Samara' +04+4:00:00 STD>)
+    datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<DstTzInfo 'Europe/Samara' LMT+3:20:00 STD>)
     """
     as_tz = _timezone(as_tz)
     if not source_date.tzinfo:
