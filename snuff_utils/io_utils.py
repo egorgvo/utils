@@ -89,6 +89,32 @@ def variants_question(question, answers=None, improved_answers=None, retry=True,
 
 
 def sv_import(filename, field_names=None, fields_converters=None, comment_symbol='', sep=','):
+    """
+    Imports csv or other -sv files.
+
+    Usage example:
+        Let's say we have csv file with two columns and two rows of values, columns are separated by semicolon (;)
+        Like this:
+            ID;Name
+            123;Jimmy
+            456;Andrew
+
+        from snuff_utils.io_utils import sv_import
+        rows = sv_import('/path/to/sv_file.csv', sep=';')
+        # iterate over rows
+        for row in rows:
+            print(row)
+        # {'ID': '123', 'Name': 'Jimmy'}
+        # {'ID': '456', 'Name': 'Andrew'}
+
+        # Function returns a generator. To get list of dicts convert result to a list:
+        rows = sv_import('/path/to/sv_file.csv', sep=';')
+        data = list(rows)
+        # [
+        #   {'ID': '123', 'Name': 'Jimmy'}
+        #   {'ID': '456', 'Name': 'Andrew'}
+        # ]
+    """
     if not fields_converters:
         fields_converters = {}
     with open(filename, 'r') as svfile:

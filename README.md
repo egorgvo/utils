@@ -115,6 +115,37 @@ datetime.datetime(2019, 12, 12, 6, 34, tzinfo=<DstTzInfo 'Europe/Samara' +04+4:0
 datetime.datetime(2019, 12, 12, 2, 34, tzinfo=<DstTzInfo 'Europe/Samara' +04+4:00:00 STD>)
 ```
 
+## Input/output functions
+
+### sv_import
+
+Imports csv or other -sv files.
+
+Let's say you have csv file with two columns and two rows of values, columns are separated by semicolon (;). Like this:
+```
+ID;Name
+123;Jimmy
+456;Andrew
+```
+
+```python
+from snuff_utils.io_utils import sv_import
+rows = sv_import('/path/to/sv_file.csv', sep=';')
+for row in rows:
+    print(row)
+# {'ID': '123', 'Name': 'Jimmy'}
+# {'ID': '456', 'Name': 'Andrew'}
+```
+Function returns a generator. To get list of dicts convert result to a list:
+```python
+rows = sv_import('/path/to/sv_file.csv', sep=';')
+data = list(rows)
+# [
+#   {'first column': 'first row value', 'second column': 'first row value'},
+#   {'first column': 'second row value', 'second column': 'second row value'}
+# ]
+```
+
 ## Other functions
 Other functions is not described yet. You can see them in the corresponding modules. 
 Some of them have descriptions in their docstrings.
