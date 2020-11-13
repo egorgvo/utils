@@ -146,15 +146,43 @@ data = list(rows)
 # ]
 ```
 
+## Universal
+
+### popattr
+
+`popattr(obj, attr, default)`
+
+Alias for sequential calls of `getattr` and `delattr`. Similar to dict.pop. Default value is `None`.
+
+```python
+>>> class A: pass
+>>> a = A()
+>>> setattr(a, 'some', 5)
+>>> popattr(a, 'some')
+5
+>>> popattr(a, 'some')
+
+>>> popattr(a, 'some', 'default')
+'default'
+```
+
 ## Other functions
 Other functions is not described yet. You can see them in the corresponding modules. 
 Some of them have descriptions in their docstrings.
 
 ## Changelog
 
+### 1.0.7
+
+- Added `popattr` function.
+
+### 1.0.6
+
+- Added `sv_import` documentation.
+
 ### 1.0.5
 
-- Fixed 'date_and_time.localize' behaviour for non-pytz timezones. Added tests.
+- Fixed `date_and_time.localize` behaviour for non-pytz timezones. Added tests.
 
 ### 1.0.4
 

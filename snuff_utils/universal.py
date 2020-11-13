@@ -79,6 +79,25 @@ def list_of_lists_unwind(some_list, iterator=False):
     return list(result)
 
 
+def popattr(obj, attr, default=None):
+    """
+    Alias for sequential calls of getattr and delattr. Similar to dict.pop.
+    >>> class A: pass
+    >>> a = A()
+    >>> setattr(a, 'some', 5)
+    >>> popattr(a, 'some')
+    5
+    >>> popattr(a, 'some')
+
+    >>> popattr(a, 'some', 'default')
+    'default'
+    """
+    value = getattr(obj, attr, default)
+    if hasattr(obj, attr):
+        delattr(obj, attr)
+    return value
+
+
 if __name__ == '__main__':
 
     def _test_module():
