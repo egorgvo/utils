@@ -172,6 +172,11 @@ Some of them have descriptions in their docstrings.
 
 ## Changelog
 
+### 1.0.8 (2020-12-09)
+
+- Added `append_to_list` and `add_to_set` params to `group_list_of_dicts` function.
+
+
 ### 1.0.7
 
 - Added `popattr` function.
