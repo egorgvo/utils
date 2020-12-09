@@ -211,7 +211,7 @@ def column_sum(data, column_name):
     return sum(row[column_name] if column_name in row else 0 for row in data)
 
 
-def group_list_of_dicts(_source_list, by_fields='', sum_fields=''):
+def group_list_of_dicts(_source_list, by_fields='', sum_fields='', append_to_list='', add_to_set=''):
     """
     Группирует список словарей по полям выборки
 
@@ -233,12 +233,20 @@ def group_list_of_dicts(_source_list, by_fields='', sum_fields=''):
     >>> source_list[-1]['d'] = 1
     >>> group_list_of_dicts(source_list, 'a,d', 'b,c')
     [{'a': 1, 'b': 7, 'c': 16}, {'a': 1, 'd': 1, 'b': 2, 'c': 5}]
+    >>> group_list_of_dicts(source_list, 'a,d', append_to_list='b,c')
+    [{'a': 1, 'b': [2, 3, 2], 'c': [5, 5, 6]}, {'a': 1, 'd': 1, 'b': [2], 'c': [5]}]
+    >>> group_list_of_dicts(source_list, 'a,d', add_to_set='b,c')
+    [{'a': 1, 'b': {2, 3}, 'c': {5, 6}}, {'a': 1, 'd': 1, 'b': {2}, 'c': {5}}]
 
     :param _source_list: Исходный список словарей
     :param by_fields: Поля выборки
     :type by_fields: Список, либо строка ключей через запятые
     :param sum_fields: Поля, которые суммируются при группировке
     :type sum_fields: Список, либо строка ключей через запятые
+    :param append_to_list: Поля, которые добавляются в список (list) при группировке
+    :type append_to_list: Список, либо строка ключей через запятые
+    :param add_to_set: Поля, которые добавляются в множество (set) при группировке
+    :type add_to_set: Список, либо строка ключей через запятые
     :return: Список словарей
     """
     if isinstance(by_fields, str):
@@ -248,6 +256,14 @@ def group_list_of_dicts(_source_list, by_fields='', sum_fields=''):
     if isinstance(sum_fields, str):
         sum_fields = sum_fields.split(',')
         if '' in sum_fields: sum_fields.remove('')
+
+    if isinstance(append_to_list, str):
+        append_to_list = append_to_list.split(',')
+        if '' in append_to_list: append_to_list.remove('')
+
+    if isinstance(add_to_set, str):
+        add_to_set = add_to_set.split(',')
+        if '' in add_to_set: add_to_set.remove('')
 
     # Собираем словари в группы по полям выборки
     # В итоге получим список списков схоих по полям выборки словарей
@@ -275,6 +291,12 @@ def group_list_of_dicts(_source_list, by_fields='', sum_fields=''):
         # Суммируем поля, указанные в sum_fields
         for field in sum_fields:
             cur_row[field] = column_sum(group_list, field)
+        # Добавляем в список поля, указанные в append_to_list
+        for field in append_to_list:
+            cur_row[field] = [row[field] for row in group_list if field in row]
+        # Добавляем во множество поля, указанные в add_to_set
+        for field in add_to_set:
+            cur_row[field] = {row[field] for row in group_list if field in row}
         result.append(cur_row)
     return result
 
