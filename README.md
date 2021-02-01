@@ -146,6 +146,30 @@ data = list(rows)
 # ]
 ```
 
+## Sorting
+
+### cmp_by_weight
+
+Comparison by weight for `sorted`.
+
+Allow sorting by dicts. If dicts are not in a weight sequence, their weights are equal. 
+`partial` defines if a dictionary from a list must match for all keys (or only for comparison dict keys).
+
+```python
+>>> sorted('a,r,b,c,d,e'.split(','), key=cmp_by_weight('c,a,d,b'))
+['c', 'a', 'd', 'b', 'e', 'r']
+
+>>> sorted([1, 2, 3, 4, 5, 6, 7], key=cmp_by_weight(1, 5, 7))
+[1, 5, 7, 2, 3, 4, 6]
+
+>>> my_list = [{'a': 1}, {'b': 2}, {'c': 5, 'a': 2}]
+>>> sorted(my_list, key=cmp_by_weight({'c': 5}, {'b': 2}))
+[{'b': 2}, {'a': 1}, {'c': 5, 'a': 2}]
+
+>>> sorted(my_list, key=cmp_by_weight({'c': 5}, {'b': 2}, partial=True))
+[{'c': 5, 'a': 2}, {'b': 2}, {'a': 1}]
+```
+
 ## Universal
 
 ### popattr
@@ -172,10 +196,13 @@ Some of them have descriptions in their docstrings.
 
 ## Changelog
 
+### 1.0.9
+
+- Added `partial` sorting for list of dicts (`cmp_by_weight`).
+
 ### 1.0.8 (2020-12-09)
 
 - Added `append_to_list` and `add_to_set` params to `group_list_of_dicts` function.
-
 
 ### 1.0.7
 
