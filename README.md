@@ -196,7 +196,7 @@ Some of them have descriptions in their docstrings.
 
 ## Changelog
 
-### 1.0.9
+### 1.0.9 (2021-02-01)
 
 - Added `partial` sorting for list of dicts (`cmp_by_weight`).
 
